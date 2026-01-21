@@ -49,6 +49,25 @@ class Escargot:
     #     if self.x > L:
     #         self.x = L
 
+# class Insecte:
+#     def __init__(self, x, y, images, vitesse=1):
+#         self.x = x
+#         self.y = y
+#         self.images = images
+#         self.vitesse = vitesse
+#         self.rect = self.images[0].get_rect(center=(x, y))
+#         self.compteur_animation = 0
+
+#     def dessine(self):
+#         surf.blit(self.images[self.compteur_animation // 10 % len(self.images)], self.rect)
+
+#     def calcule_futures_parametres(self):
+#         self.x += self.vitesse
+#         self.rect.center = (int(self.x), int(self.y))
+#         if self.x > L + self.rect.width // 2:
+#             self.x = -self.rect.width // 2
+#         self.compteur_animation += 1
+
     def dessiner(self, surface): # truc vite fait en attendant les images
         pygame.draw.circle(surface, self.couleur, (self.x, self.y), 20)
         pygame.draw.circle(surface, NOIR, (self.x + 20, self.y - 10), 5)  # Yeux
