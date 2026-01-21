@@ -1,0 +1,124 @@
+import pygame
+import sys
+from random import randint, random
+import os
+
+# Initialisation de pygame
+pygame.init()
+surf = pygame.display.set_mode((800, 600))
+L = 800
+H = 600
+
+# En attendant les images 
+BLANC = (255, 255, 255)
+NOIR = (0, 0, 0)
+ROUGE = (255, 0, 0)
+BLEU = (0, 0, 255)
+VERT = (0, 255, 0)
+JAUNE = (255, 255, 0)
+
+class Goutte:
+    def __init__(self, x, y, vitesse, longueur):
+        self.x = x
+        self.y = y
+        self.vitesse = vitesse
+        self.longueur = longueur
+
+    def dessine(self):
+        # Dessine une ligne verticale pour représenter la goutte
+        pygame.draw.line(surf, (135, 206, 235), (self.x, self.y), (self.x, self.y + self.longueur), 2)
+
+    def tombe(self):
+        # Déplace la goutte vers le bas
+        self.y += self.vitesse
+        # Si la goutte sort de l'écran, réinitialise sa position en haut
+        if self.y > H:
+            self.y = randint(-20, 0)
+            self.x = randint(0, L)
+
+class Escargot:
+    def __init__(self, nom, couleur, y):
+        self.nom = nom # a voir 
+        self.couleur = couleur # en fct de l'image a supprimer après 
+        self.x = 50
+        self.y = y
+        self.vitesse = 0
+
+    # def avancer(self):
+    #     self.x += self.vitesse
+    #     if self.x > L:
+    #         self.x = L
+
+    def dessiner(self, surface): # truc vite fait en attendant les images
+        pygame.draw.circle(surface, self.couleur, (self.x, self.y), 20)
+        pygame.draw.circle(surface, NOIR, (self.x + 20, self.y - 10), 5)  # Yeux
+        font = pygame.font.SysFont(None, 24)
+        texte = font.render(self.nom, True, NOIR)
+        surface.blit(texte, (self.x - 20, self.y - 30))
+
+# Création des escargots
+escargots = [
+    Escargot("Rapide", ROUGE, 100),
+    Escargot("Turbo", BLEU, 150),
+    Escargot("Flash", VERT, 200),
+    Escargot("Zoomeur", JAUNE, 250)
+]
+
+# Initialisation des gouttes de pluie
+gouttes = []
+for _ in range(100):
+    x = randint(0, L)
+    y = randint(-H, 0)
+    vitesse = randint(5, 15)
+    longueur = randint(5, 15)
+    gouttes.append(Goutte(x, y, vitesse, longueur))
+
+# Boucle principale
+run = True
+horloge = pygame.time.Clock()
+font = pygame.font.SysFont(None, 36)
+compteur_pluie = 0
+pluie_active = False
+
+while run:
+    for evenement in pygame.event.get():
+        if evenement.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        
+        # if evenement.type == pygame.KEYDOWN: ne fonctionnes pas 
+        #     if evenement.key == pygame.K_1:
+        #         escargots[0].vitesse += 1
+        #     if evenement.key == pygame.K_2:
+        #         escargots[1].vitesse += 1
+        #     if evenement.key == pygame.K_3:
+        #         escargots[2].vitesse += 1
+        #     if evenement.key == pygame.K_4:
+        #         escargots[3].vitesse += 1
+    
+    # Incrémente le compteur de pluie
+    compteur_pluie += 1
+    # Active la pluie après 300 frames
+    if compteur_pluie >= 300 and not pluie_active:
+        pluie_active = True
+
+    # Si la pluie est active, incrémente le compteur de durée
+    if pluie_active:
+        compteur_pluie += 1
+        if compteur_pluie >= 1000 and pluie_active:
+            pluie_active = False
+            compteur_pluie = 0
+
+    # Dessine et déplace les gouttes si la pluie est active
+    if pluie_active:
+        for goutte in gouttes:
+            goutte.dessine()
+            goutte.tombe()
+
+    surf.fill(BLANC)
+    for escargot in escargots:
+        escargot.avancer()
+        escargot.dessiner(surf)
+
+    pygame.display.flip()
+    horloge.tick(60)
