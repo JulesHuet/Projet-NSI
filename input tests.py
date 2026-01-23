@@ -1,65 +1,69 @@
 import pygame
 
+# pygame setup
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
-keystate = pygame.key.get_pressed()
-
-color='black'
-couleurrect='red'
-couleurrect2='yellow'
-
-count=0
-count2=0
 
 prev_keys = pygame.key.get_pressed()
 
-def point_in_rect(x, y, x1, y1, x2, y2):
-    return min(x1, x2) <= x <= max(x1, x2) and min(y1, y2) <= y <= max(y1, y2)
+
+class escargot:
+    def __init__(self,couleur='red',y=0):
+        self.x=0
+        self.y=y
+        self.vitesse=10
+        self.couleur=couleur
+        
+    def ajoutevitesse(self):
+        self.vitesse+=1
+    
+    def avance(self):
+        self.x+=self.vitesse
+    
+    def draw(self):
+       pygame.draw.rect(screen, self.couleur, (self.x,self.y,30,30))
+
+
+
+listeescargots=[]
+
+listeescargots.append(escargot())
+listeescargots.append(escargot(couleur='green', y=80))
+listeescargots.append(escargot(couleur='purple', y = 150))
+listeescargots.append(escargot(couleur='purple', y = 150))
+
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    screen.fill("black")
+
+
+    for i in listeescargots:
+        i.draw()
     
-    screen.fill(color)
-        
     keys = pygame.key.get_pressed()
     
     if keys[pygame.K_RIGHT] and not prev_keys[pygame.K_RIGHT]:
-        color='orange'
-        count+=1
-        print(1, count)
-
+        listeescargots[0].avance()
+    
     if keys[pygame.K_LCTRL] and not prev_keys[pygame.K_LCTRL]:
-        color='blue'
-        count2+=1
-        print(2, count2)
+        listeescargots[1].avance()
+   
+    if keys[pygame.K_SPACE] and not prev_keys[pygame.K_SPACE]:
+        listeescargots[2].avance()
     
-
-    prev_keys = keys
-    
-    mpos=pygame.mouse.get_pos()
-    lclick=pygame.mouse.get_pressed(3)[0]
-    
-    if lclick:
-        print(mpos)
-        if point_in_rect(mpos[0], mpos[1], 0, 0, 200, 200):
-            print('rect1')
-            couleurrect='blue'
-        if point_in_rect(mpos[0], mpos[1], 400, 0, 600, 200):
-            print('rect2')
-            couleurrect2='purple'
+    if keys[pygame.K_RCTRL] and not prev_keys[pygame.K_RCTRL]:
+        listeescargots[3].avance()
         
-    else:
-        couleurrect='red'
-        couleurrect2='yellow'
-    
-    
-    pygame.draw.rect(screen, couleurrect, (0,0,200,200))
-    pygame.draw.rect(screen, couleurrect2, (400,0,200,200))
-    
+    prev_keys = keys
+        
+        
+
     pygame.display.flip()
     clock.tick(60)
 
