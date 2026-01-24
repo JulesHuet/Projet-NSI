@@ -32,7 +32,7 @@ listeescargots=[]
 listeescargots.append(escargot())
 listeescargots.append(escargot(couleur='green', y=80))
 listeescargots.append(escargot(couleur='purple', y = 150))
-listeescargots.append(escargot(couleur='purple', y = 150))
+listeescargots.append(escargot(couleur='pink', y = 230 ))
 
 
 while running:
@@ -68,3 +68,6 @@ while running:
     clock.tick(60)
 
 pygame.quit()
+
+pygame.quit()
+
