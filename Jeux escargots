@@ -1,17 +1,14 @@
 import pygame
 import sys
-from random import randint, random
-import os
+from random import randint
+import os 
 
 # Initialisation de pygame
 pygame.init()
-surf = pygame.display.set_mode((1280, 720))
 L = 1280
 H = 720
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((L, H))
 clock = pygame.time.Clock()
-running = True
-
 
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
@@ -21,40 +18,46 @@ class Goutte:
         self.longueur = longueur
 
     def dessine(self):
-        # Dessine une ligne verticale pour représenter la goutte
-        pygame.draw.line(surf, (135, 206, 235), (self.x, self.y), (self.x, self.y + self.longueur), 2)
+        pygame.draw.line(screen, (135, 206, 235), (self.x, self.y), (self.x, self.y + self.longueur), 2)
 
     def tombe(self):
-        # Déplace la goutte vers le bas
         self.y += self.vitesse
-        # Si la goutte sort de l'écran, réinitialise sa position en haut
         if self.y > H:
             self.y = randint(-20, 0)
             self.x = randint(0, L)
 
 class escargot:
-    def __init__(self,couleur='red',y=680):
-        self.x=0
-        self.y=y
-        self.vitesse=10
-        self.couleur=couleur
-        
+    def __init__(self, couleur='red', y=680):
+        self.x = 0
+        self.y = y
+        self.vitesse = 10
+        self.couleur = couleur
+
     def ajoutevitesse(self):
-        self.vitesse+=1
-    
+        self.vitesse += 1
+
     def avance(self):
-        self.x+=self.vitesse
-    
+        self.x += self.vitesse
+
     def draw(self):
-       pygame.draw.rect(screen, self.couleur, (self.x,self.y,30,30))
+        pygame.draw.rect(screen, self.couleur, (self.x, self.y, 30, 30))
+
+
+def affiche_victoire(couleur):
+    font = pygame.font.SysFont(None, 72)
+    texte = font.render(f"Victoire de {couleur} !", True, (255, 255, 255))
+    screen.blit(texte, (L//2 - texte.get_width()//2, H//2 - texte.get_height()//2))
+    pygame.display.flip()
+    pygame.time.wait(10000)  # Attend 10 secondes
+    return True
 
 # Création des escargots
-listeescargots=[]
-
-listeescargots.append(escargot())
-listeescargots.append(escargot(couleur='green', y=630))
-listeescargots.append(escargot(couleur='purple', y = 580))
-listeescargots.append(escargot(couleur='pink', y = 530 ))
+listeescargots = [
+    escargot(couleur='red', y=680),
+    escargot(couleur='green', y=630),
+    escargot(couleur='purple', y=580),
+    escargot(couleur='pink', y=530)
+]
 
 # Initialisation des gouttes de pluie
 gouttes = []
@@ -67,7 +70,6 @@ for _ in range(100):
 
 # Boucle principale
 run = True
-horloge = pygame.time.Clock()
 compteur_pluie = 0
 pluie_active = False
 prev_keys = pygame.key.get_pressed()
@@ -79,26 +81,33 @@ while run:
 
     screen.fill("black")
 
+    victoire = False
+    for i, escargot in enumerate(listeescargots):
+        escargot.draw()
+        if escargot.x >= L - 30:  # Si l'escargot arrive à droite de l'écran
+            victoire = affiche_victoire(['red', 'green', 'purple', 'pink'][i])
+            if victoire:
+                run = False  # Ferme la fenêtre après 10 secondes
 
-    for i in listeescargots:
-        i.draw()
-        
+    if victoire:
+        continue  # On saute le reste de la boucle si victoire
+
     keys = pygame.key.get_pressed()
-        
+
     if keys[pygame.K_RIGHT] and not prev_keys[pygame.K_RIGHT]:
         listeescargots[0].avance()
-        
+
     if keys[pygame.K_LCTRL] and not prev_keys[pygame.K_LCTRL]:
         listeescargots[1].avance()
-       
+
     if keys[pygame.K_SPACE] and not prev_keys[pygame.K_SPACE]:
         listeescargots[2].avance()
-        
+
     if keys[pygame.K_RCTRL] and not prev_keys[pygame.K_RCTRL]:
         listeescargots[3].avance()
-            
+
     prev_keys = keys
-    
+
     # Incrémente le compteur de pluie
     compteur_pluie += 1
     # Active la pluie après 300 frames
@@ -118,11 +127,8 @@ while run:
             goutte.dessine()
             goutte.tombe()
 
-
     pygame.display.flip()
     clock.tick(60)
 
 pygame.quit()
-
-    pygame.display.flip()
-    horloge.tick(60)
+sys.exit()
