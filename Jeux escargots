@@ -5,20 +5,13 @@ import os
 
 # Initialisation de pygame
 pygame.init()
-surf = pygame.display.set_mode((1500, 600))
-L = 800
-H = 600
+surf = pygame.display.set_mode((1280, 720))
+L = 1280
+H = 720
+screen = pygame.display.set_mode((1280, 720))
+clock = pygame.time.Clock()
+running = True
 
-# En attendant les images 
-BLANC = (255, 255, 255)
-NOIR = (0, 0, 0)
-ROUGE = (255, 0, 0)
-BLEU = (0, 0, 255)
-VERT = (0, 255, 0)
-JAUNE = (255, 255, 0)
-
-count=0
-count2=0
 
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
@@ -39,65 +32,29 @@ class Goutte:
             self.y = randint(-20, 0)
             self.x = randint(0, L)
 
-class Escargot:
-    
-    keys = pygame.key.get_pressed()
-    def __init__(self, nom, couleur, y):
-        self.nom = nom # a voir 
-        self.couleur = couleur # en fct de l'image a supprimer après 
-        self.x = 50
-        self.y = y
-        self.vitesse = 0
-        self.pause_tmps = 1 # LE TEMPS DE PAUSE EN IMAGES (60 ips)
-        self.pause_reste = 0 # LE TEMPS PAR DÉFAUT RESTANT POUR LA PAUSE
-        self.pause = False # L'ÉTAT DE LA PAUSE
-
-    def avancer(self, keys, prev_keys):
+class escargot:
+    def __init__(self,couleur='red',y=680):
+        self.x=0
+        self.y=y
+        self.vitesse=10
+        self.couleur=couleur
         
-        if self.pause: # SI LA PAUSE EST ACTIVE...
-            self.pause_reste += 1 # AJOUTER UN NOMBRE A CHAQUE FOIS COMME COMPTE A REBOUS...
-            if self.pause_reste >= self.pause_tmps: # JUSQU'A ATTEINDRE LA LIMITE/LE TEMPS VOULU
-                self.pause = False # DESACTIVE LA PAUSE
-                self.pause_reste = 0 # LE COMPTE A REBOURS DE LA PAUSE EST REMIS A ZERO
-            return # POUR ARRÊTER TOUTE ANIMATION
+    def ajoutevitesse(self):
+        self.vitesse+=1
     
-        if keys[pygame.K_RIGHT] and not prev_keys[pygame.K_RIGHT]:
-            self.x+=10
-            self.pause = True
-
-# class Insecte:
-#     def __init__(self, x, y, images, vitesse=1):
-#         self.x = x
-#         self.y = y
-#         self.images = images
-#         self.vitesse = vitesse
-#         self.rect = self.images[0].get_rect(center=(x, y))
-#         self.compteur_animation = 0
-
-#     def dessine(self):
-#         surf.blit(self.images[self.compteur_animation // 10 % len(self.images)], self.rect)
-
-#     def calcule_futures_parametres(self):
-#         self.x += self.vitesse
-#         self.rect.center = (int(self.x), int(self.y))
-#         if self.x > L + self.rect.width // 2:
-#             self.x = -self.rect.width // 2
-#         self.compteur_animation += 1
-
-    def dessiner(self, surface): # truc vite fait en attendant les images
-        pygame.draw.circle(surface, self.couleur, (self.x, self.y), 20)
-        pygame.draw.circle(surface, NOIR, (self.x + 20, self.y - 10), 5)  # Yeux
-        font = pygame.font.SysFont(None, 24)
-        texte = font.render(self.nom, True, NOIR)
-        surface.blit(texte, (self.x - 20, self.y - 30))
+    def avance(self):
+        self.x+=self.vitesse
+    
+    def draw(self):
+       pygame.draw.rect(screen, self.couleur, (self.x,self.y,30,30))
 
 # Création des escargots
-escargots = [
-    Escargot("Rapide", ROUGE, 100),
-    Escargot("Turbo", BLEU, 150),
-    Escargot("Flash", VERT, 200),
-    Escargot("Zoomeur", JAUNE, 250)
-]
+listeescargots=[]
+
+listeescargots.append(escargot())
+listeescargots.append(escargot(couleur='green', y=630))
+listeescargots.append(escargot(couleur='purple', y = 580))
+listeescargots.append(escargot(couleur='pink', y = 530 ))
 
 # Initialisation des gouttes de pluie
 gouttes = []
@@ -111,29 +68,36 @@ for _ in range(100):
 # Boucle principale
 run = True
 horloge = pygame.time.Clock()
-font = pygame.font.SysFont(None, 36)
 compteur_pluie = 0
 pluie_active = False
-
 prev_keys = pygame.key.get_pressed()
 
 while run:
     for evenement in pygame.event.get():
         if evenement.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+            run = False
+
+    screen.fill("black")
+
+
+    for i in listeescargots:
+        i.draw()
         
-        # if evenement.type == pygame.KEYDOWN: ne fonctionnes pas 
-        #     if evenement.key == pygame.K_1:
-        #         escargots[0].vitesse += 1
-        #     if evenement.key == pygame.K_2:
-        #         escargots[1].vitesse += 1
-        #     if evenement.key == pygame.K_3:
-        #         escargots[2].vitesse += 1
-        #     if evenement.key == pygame.K_4:
-        #         escargots[3].vitesse += 1
-    
     keys = pygame.key.get_pressed()
+        
+    if keys[pygame.K_RIGHT] and not prev_keys[pygame.K_RIGHT]:
+        listeescargots[0].avance()
+        
+    if keys[pygame.K_LCTRL] and not prev_keys[pygame.K_LCTRL]:
+        listeescargots[1].avance()
+       
+    if keys[pygame.K_SPACE] and not prev_keys[pygame.K_SPACE]:
+        listeescargots[2].avance()
+        
+    if keys[pygame.K_RCTRL] and not prev_keys[pygame.K_RCTRL]:
+        listeescargots[3].avance()
+            
+    prev_keys = keys
     
     # Incrémente le compteur de pluie
     compteur_pluie += 1
@@ -154,12 +118,11 @@ while run:
             goutte.dessine()
             goutte.tombe()
 
-    surf.fill(BLANC)
-    for escargot in escargots:
-        escargot.avancer(keys, prev_keys)
-        escargot.dessiner(surf)
 
-    prev_keys = keys
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
 
     pygame.display.flip()
     horloge.tick(60)
