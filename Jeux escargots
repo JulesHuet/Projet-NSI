@@ -110,13 +110,13 @@ while run:
     screen.fill("black") # RAFRAICHISSEMENT DE L'ÉCRAN
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_RIGHT] and not prev_keys[pygame.K_RIGHT]:
-        listeescargots[0].bouger()
     if keys[pygame.K_LCTRL] and not prev_keys[pygame.K_LCTRL]:
-        listeescargots[1].bouger()
+        listeescargots[0].bouger()
     if keys[pygame.K_SPACE] and not prev_keys[pygame.K_SPACE]:
-        listeescargots[2].bouger()
+        listeescargots[1].bouger()
     if keys[pygame.K_RCTRL] and not prev_keys[pygame.K_RCTRL]:
+        listeescargots[2].bouger()
+    if keys[pygame.K_RIGHT] and not prev_keys[pygame.K_RIGHT]:
         listeescargots[3].bouger()
         
     if keys[pygame.K_TAB] and not prev_keys[pygame.K_TAB]:
