@@ -1,17 +1,22 @@
 import pygame
 import sys
 from random import randint
+import os
 
 pygame.init()
 L = 1280
 H = 720
 screen = pygame.display.set_mode((L, H))
 clock = pygame.time.Clock()
-bg = pygame.transform.scale(pygame.image.load("bg.png"), (1280, 720))
-bleu = pygame.transform.scale(pygame.image.load("snail_1.1.png"), (110, 110))
-vert = pygame.transform.scale(pygame.image.load("snail_2.1.png"), (110, 110))
-jaune = pygame.transform.scale(pygame.image.load("snail_3.1.png"), (120, 120))
-violet = pygame.transform.scale(pygame.image.load("snail_4.1.png"), (110, 110))
+bg = pygame.transform.scale(pygame.image.load(os.path.join("images","background.png")), (1280, 720))
+bleu = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_1.1.png")), (110, 110))
+bleu2 = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_1.2.png")), (110, 110))
+vert = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_2.1.png")), (110, 110))
+vert2 = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_2.2.png")), (110, 110))
+jaune = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_3.1.png")), (120, 120))
+jaune2 = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_3.2.png")), (120, 120))
+violet = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_4.1.png")), (110, 110))
+violet2 = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_4.2.png")), (110, 110))
 
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
@@ -35,6 +40,7 @@ class escargot:
         self.y = y
         self.vitesse = 10
         self.img = img
+        self.img2 = img2
 
     def bouger(self):
         self.vitesse += 0.1
@@ -75,9 +81,13 @@ for _ in range(100):
 liste_objets = [Fond()]
 listeescargots = [
     escargot(img=bleu, y=460),
+    escargot(img2=bleu2, y=460),
     escargot(img=vert, y=520),
+    escargot(img2=vert2, y=520),
     escargot(img=jaune, y=570),
-    escargot(img=violet, y=620)
+    escargot(img2=jaune2, y=570),
+    escargot(img=violet, y=620),
+    escargot(img2=violet2, y=620)
 ]
 
 # Boucle principale
