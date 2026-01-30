@@ -1,17 +1,18 @@
 import pygame
 import sys
 from random import randint
+import os
 
 pygame.init()
 L = 1280
 H = 720
 screen = pygame.display.set_mode((L, H))
 clock = pygame.time.Clock()
-bg = pygame.transform.scale(pygame.image.load("bg.png"), (1280, 720))
-bleu = pygame.transform.scale(pygame.image.load("snail_1.1.png"), (110, 110))
-vert = pygame.transform.scale(pygame.image.load("snail_2.1.png"), (110, 110))
-jaune = pygame.transform.scale(pygame.image.load("snail_3.1.png"), (120, 120))
-violet = pygame.transform.scale(pygame.image.load("snail_4.1.png"), (110, 110))
+bg = pygame.transform.scale(pygame.image.load(os.path.join("images","background.png")), (1280, 720))
+bleu = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_1.1.png")), (110, 110))
+vert = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_2.1.png")), (110, 110))
+jaune = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_3.1.png")), (120, 120))
+violet = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_4.1.png")), (110, 110))
 
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
