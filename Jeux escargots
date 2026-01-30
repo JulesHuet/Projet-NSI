@@ -74,10 +74,10 @@ for _ in range(100):
 # LISTE DE TOUTES LES CLASSES EN ORDRE DE COUCHE
 liste_objets = [Fond()]
 listeescargots = [
-    escargot(img=bleu, y=440),
-    escargot(img=vert, y=460),
-    escargot(img=jaune, y=480),
-    escargot(img=violet, y=500)
+    escargot(img=bleu, y=460),
+    escargot(img=vert, y=520),
+    escargot(img=jaune, y=570),
+    escargot(img=violet, y=620)
 ]
 
 # Boucle principale
