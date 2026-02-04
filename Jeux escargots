@@ -39,21 +39,7 @@ class Menu:
 
 # Faire une classe pour le jeu qui regroupe tout ci dessous :
 # Faire une classe pour les évenements 
-class Goutte:
-    def __init__(self, x, y, vitesse, longueur):
-        self.x = x
-        self.y = y
-        self.vitesse = vitesse
-        self.longueur = longueur
 
-    def dessine(self):
-        pygame.draw.line(screen, (135, 206, 235), (self.x, self.y), (self.x, self.y + self.longueur), 2)
-
-    def tombe(self):
-        self.y += self.vitesse
-        if self.y > H:
-            self.y = randint(-20, 0)
-            self.x = randint(0, L)
 
 class escargot:
     def __init__(self, img, img2, y=680):
@@ -88,7 +74,22 @@ class affiche_victoire():
     
     def bouger(self):
         pass
-    
+
+class Goutte:
+    def __init__(self, x, y, vitesse, longueur):
+        self.x = x
+        self.y = y
+        self.vitesse = vitesse
+        self.longueur = longueur
+
+    def dessine(self):
+        pygame.draw.line(screen, (135, 206, 235), (self.x, self.y), (self.x, self.y + self.longueur), 2)
+
+    def tombe(self):
+        self.y += self.vitesse
+        if self.y > H:
+            self.y = randint(-20, 0)
+            self.x = randint(0, L)
 # class Lanceur():
 #     def __init__(self):
 #         self.font = pygame.font.SysFont(None, 72)
