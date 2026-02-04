@@ -1,7 +1,6 @@
 import pygame
 import sys
 from random import randint
-import os
 
 pygame.init()
 L = 1280
@@ -9,71 +8,6 @@ H = 720
 screen = pygame.display.set_mode((L, H))
 clock = pygame.time.Clock()
 
-# Couleurs
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAY = (200, 200, 200)
-BLUE = (0, 0, 255)
-
-# Noms par défaut des escargots
-noms_escargots = ["Bleu", "Vert", "Jaune", "Violet"]
-touches_escargots = ["LCTRL", "SPACE", "RCTRL", "->"]
-
-# Classe pour le menu
-class Menu:
-    def __init__(self):
-        self.titre = pygame.font.SysFont(None, 72)
-        self.texte = pygame.font.SysFont(None, 36)
-        self.bouton = pygame.font.SysFont(None, 48)
-        self.input_active = [False, False, False, False]
-        self.input_index = 0
-        self.noms = noms_escargots.copy()
-
-    def dessiner(self) :
-        pass 
-
-    def clics (self):
-        pass
-    def saisie(self):
-        pass
-
-# Faire une classe pour le jeu qui regroupe tout ci dessous :
-# Faire une classe pour les évenements 
-
-
-class escargot:
-    def __init__(self, img, img2, y=680):
-        self.x = 0
-        self.y = y
-        self.vitesse = 10
-        self.img = img
-        self.img2 = img2
-
-    def bouger(self):
-        self.vitesse += 0.1
-        self.x += self.vitesse
-
-    def afficher(self):
-        screen.blit(self.img, (self.x, self.y))
-        
-class Fond:
-    def bouger(self):
-        pass
-    def afficher(self):
-        screen.blit(bg, (0, 0))
-
-
-class affiche_victoire():
-    def __init__(self, couleur):
-        self.couleur = couleur
-        self.font = pygame.font.SysFont(None, 72)
-        self.texte = self.font.render(f"Victoire de {self.couleur} !", True, (255, 255, 255))
-        
-    def afficher(self):
-        screen.blit(self.texte, (L//2 - self.texte.get_width()//2, H//2 - self.texte.get_height()//2))
-    
-    def bouger(self):
-        pass
 
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
@@ -90,20 +24,48 @@ class Goutte:
         if self.y > H:
             self.y = randint(-20, 0)
             self.x = randint(0, L)
+
+class escargot:
+    def __init__(self, img, y=680):
+        self.x = 0
+        self.y = y
+        self.vitesse = 10
+        self.img = img
+
+    def bouger(self):
+        self.vitesse += 0.1
+        self.x += self.vitesse
+
+    def afficher(self):
+        screen.blit(self.img, (self.x, self.y))
+        
+class Fond:
+    def afficher(self):
+        screen.blit(bg, (0, 0))
+
+
+class affiche_victoire():
+    def __init__(self, couleur):
+        self.couleur = couleur
+        self.font = pygame.font.SysFont(None, 72)
+        self.texte = self.font.render(f"Victoire de {self.couleur} !", True, (255, 255, 255))
+        
+    def afficher(self):
+        screen.blit(self.texte, (L//2 - self.texte.get_width()//2, H//2 - self.texte.get_height()//2))
+    
+    def bouger(self):
+        pass
+    
 # class Lanceur():
 #     def __init__(self):
 #         self.font = pygame.font.SysFont(None, 72)
 #         self.texte = self.font.render(f"", True, (255,255,255))
 
-bg = pygame.transform.scale(pygame.image.load(os.path.join("images","background.png")), (1280, 720))
-bleu = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_1.1.png")), (110, 110))
-bleu2 = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_1.2.png")), (110, 110))
-vert = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_2.1.png")), (110, 110))
-vert2 = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_2.2.png")), (110, 110))
-jaune = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_3.1.png")), (120, 120))
-jaune2 = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_3.2.png")), (120, 120))
-violet = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_4.1.png")), (110, 110))
-violet2 = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_4.2.png")), (110, 110))
+bg = pygame.transform.scale(pygame.image.load("bg.png"), (1280, 720))
+bleu = pygame.transform.scale(pygame.image.load("snail_1.1.png"), (110, 110))
+vert = pygame.transform.scale(pygame.image.load("snail_2.1.png"), (110, 110))
+jaune = pygame.transform.scale(pygame.image.load("snail_3.1.png"), (120, 120))
+violet = pygame.transform.scale(pygame.image.load("snail_4.1.png"), (110, 110)) 
 
 
 # Initialisation des gouttes de pluie
@@ -118,10 +80,10 @@ for _ in range(100):
 # LISTE DE TOUTES LES CLASSES EN ORDRE DE COUCHE
 liste_objets = [Fond()]
 listeescargots = [
-    escargot(img=bleu, img2=bleu2, y=460),
-    escargot(img=vert, img2=vert2, y=520),
-    escargot(img=jaune, img2=jaune2, y=570),
-    escargot(img=violet, img2=violet2,  y=620),
+    escargot(img=bleu, y=460),
+    escargot(img=vert, y=520),
+    escargot(img=jaune, y=570),
+    escargot(img=violet, y=620)
 ]
 
 # Boucle principale
@@ -179,11 +141,14 @@ while run:
     for obj in liste_objets:
         obj.afficher()
         obj.bouger() 
+    
     for escargot in listeescargots:
         escargot.afficher()
+    
     for i, escargot in enumerate(listeescargots):
         if escargot.x >= L - 30 and victoire is None:  # Si l'escargot arrive à droite de l'écran
             victoire = affiche_victoire(['bleu', 'vert', 'jaune', 'violet'][i])
+    
     if victoire:
         victoire.afficher()
 
