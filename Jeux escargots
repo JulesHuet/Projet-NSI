@@ -9,6 +9,24 @@ H = 720
 screen = pygame.display.set_mode((L, H))
 clock = pygame.time.Clock()
 
+# Classe pour le menu
+class Menu:
+    def __init__(self):
+        self.titre = pygame.font.SysFont(None, 72)
+        self.texte = pygame.font.SysFont(None, 36)
+        self.bouton = pygame.font.SysFont(None, 48)
+        self.input_active = [False, False, False, False]
+        self.input_index = 0
+        self.noms = noms_escargots.copy()
+
+    def dessiner(self) :
+        pass 
+
+    def clics (self):
+        pass
+    def saisie(self):
+        pass
+
 
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
