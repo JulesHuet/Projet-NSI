@@ -37,7 +37,8 @@ class Menu:
     def saisie(self):
         pass
 
-
+# Faire une classe pour le jeu qui regroupe tout ci dessous :
+# Faire une classe pour les évenements 
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
         self.x = x
