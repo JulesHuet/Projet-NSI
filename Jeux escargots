@@ -8,7 +8,6 @@ H = 720
 screen = pygame.display.set_mode((L, H))
 clock = pygame.time.Clock()
 
-
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
         self.x = x
@@ -63,8 +62,6 @@ class Fond:
     def afficher(self):
         screen.blit(bg, (0, 0))
  
-
-
         
 class affiche_victoire():
     def __init__(self, couleur):
@@ -74,29 +71,23 @@ class affiche_victoire():
         
     def afficher(self):
         screen.blit(self.texte, (L//2 - self.texte.get_width()//2, 210))
-    
-
-# class Lanceur():
-#     def __init__(self):
-#         self.font = pygame.font.SysFont(None, 72)
-#         self.texte = self.font.render(f"", True, (255,255,255))
-
+        
+        
 bg = pygame.transform.scale(pygame.image.load("bg.png"), (1280, 720))
 bleu = pygame.transform.scale(pygame.image.load("snail_1.1.png"), (110, 110))
 vert = pygame.transform.scale(pygame.image.load("snail_2.1.png"), (110, 110))
 jaune = pygame.transform.scale(pygame.image.load("snail_3.1.png"), (120, 120))
 violet = pygame.transform.scale(pygame.image.load("snail_4.1.png"), (110, 110)) 
 
-
 # Initialisation des gouttes de pluie
 gouttes = []
 for _ in range(100):
     x = randint(0, L)
     y = randint(-H, 0)
-    vitesse = randint(5, 15)
+    vitesse = randint(15, 30)
     longueur = randint(5, 15)
     gouttes.append(Goutte(x, y, vitesse, longueur))
-    
+
 # LISTE DE TOUTES LES CLASSES EN ORDRE DE COUCHE
 liste_objets = [Fond()]
 listeescargots = [
@@ -115,15 +106,33 @@ pluie_active = False
 prev_keys = pygame.key.get_pressed()
 victoire = None
 course_lancee = False
-Decompte=['3','2','1','Go !']
- 
+decompte = ['3', '2', '1', 'Go !']
+index_decompte = 0
+decompte_actif = True  # Le décompte commence tout de suite
+font_decompte = pygame.font.SysFont(None, 100)
+
 while run:
     for evenement in pygame.event.get():
         if evenement.type == pygame.QUIT:
             run = False
 
-    clock.tick(60)  # NOMBRE D'IMAGES PAR SECONDE
-    screen.fill("black") # RAFRAICHISSEMENT DE L'ÉCRAN
+    clock.tick(60)
+
+    # Affiche le fond
+    screen.blit(bg, (0, 0))
+
+    # Gestion du décompte
+    if decompte_actif:
+        texte_decompte = font_decompte.render(decompte[index_decompte], True, (255, 255, 255))
+        screen.blit(texte_decompte, (L//2 - texte_decompte.get_width()//2, H//2 - 50))
+        pygame.display.flip()
+        pygame.time.wait(1000)  # Attend 1 seconde
+        index_decompte += 1
+        if index_decompte >= len(decompte):
+            decompte_actif = False
+            course_lancee = True
+            compteur_frame = 0  # Réinitialise le compteur de temps
+        continue  # On saute le reste de la boucle pendant le décompte
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LCTRL] and not prev_keys[pygame.K_LCTRL]:
@@ -134,58 +143,52 @@ while run:
         listeescargots[2].bouger()
     if keys[pygame.K_RIGHT] and not prev_keys[pygame.K_RIGHT]:
         listeescargots[3].bouger()
-        
-    if keys[pygame.K_TAB] and not prev_keys[pygame.K_TAB]:
-        for escargot in listeescargots:
-            escargot.x = 0
-        victoire = None
-        leaderboard = None
-        compteur_frame = 0
-        course_lancee = False
-        
+
     prev_keys = keys
-    
-    # Dessine et déplace les gouttes si la pluie est active
-    if pluie_active:
-         for goutte in gouttes:
-             goutte.dessine()
-             goutte.tombe()
-    
-    # Incrémente le compteur de pluie
-    compteur_pluie += 1
-    if course_lancee:    
-        compteur_frame += 1
-    # Active la pluie après 300 frames
-    if compteur_pluie >= 800 and not pluie_active:
-        pluie_active = True
 
-    # Si la pluie est active, incrémente le compteur de durée
-    if pluie_active:
-        compteur_pluie += 1
-        if compteur_pluie >= 1700 and pluie_active:
-            pluie_active = False
-            compteur_pluie = 0
-
-    #APPELS AUX OBJETS DANS CHAQUE CLASSE DANS LA LISTE
+    # Affiche les objets
     for obj in liste_objets:
         obj.afficher()
-    
+
     for escargot in listeescargots:
         escargot.afficher()
-    
+
     for i, escargot in enumerate(listeescargots):
         if escargot.x >= L - 30 and victoire is None:  # Si l'escargot arrive à droite de l'écran
             victoire = affiche_victoire(['bleu', 'vert', 'jaune', 'violet'][i])
             leaderboard = Leaderboard()
         if escargot.x >= L - 30 and leaderboard:
             leaderboard.ajouter(['Bleu', 'Vert', 'Jaune', 'Violet'][i], compteur_frame)
-    
+            
+    # Dessine et déplace les gouttes si la pluie est active
+    if pluie_active:
+         for goutte in gouttes:
+             goutte.dessine()
+             goutte.tombe()
+
+    # Incrémente le compteur de pluie
+    compteur_pluie += 1
+    if course_lancee:
+        compteur_frame += 1
+
+    # Active la pluie 
+    if compteur_pluie >= 500 and not pluie_active:
+        pluie_active = True
+
+    # Si la pluie est active, incrémente le compteur de durée
+    if pluie_active:
+        compteur_pluie += 1
+        if compteur_pluie >= 1000 and pluie_active:
+            pluie_active = False
+            compteur_pluie = 0
+
     if victoire:
         victoire.afficher()
-        
+
     if leaderboard:
         leaderboard.afficher()
 
     pygame.display.flip()
+
 pygame.quit()
 sys.exit()
