@@ -102,42 +102,59 @@ touches_escargots = ["LCTRL", "SPACE", "RCTRL", "->"]
 # Classe pour le menu
 class Menu:
     def __init__(self):
+        # Polices pour le texte
         self.font_titre = pygame.font.SysFont(None, 72)
         self.font_texte = pygame.font.SysFont(None, 36)
         self.font_bouton = pygame.font.SysFont(None, 48)
+        # Liste pour savoir quel champ de texte est actif
         self.input_active = [False, False, False, False]
+        # Index du champ actif
         self.input_index = 0
-        self.noms = noms_escargots.copy()
+        # Copie des noms des escargots
+        self.noms = noms_escargots
 
     def dessiner(self):
+        # Affiche le fond et le titre
         screen.blit(bg, (0, 0))
         titre = self.font_titre.render("Course d'escargots", True, WHITE)
         screen.blit(titre, (L//2 - titre.get_width()//2, 50))
 
+        # Affiche les 4 escargots et leurs noms
         for i in range(4):
-            couleur = BLUE if i == 0 else (0, 255, 0) if i == 1 else (255, 255, 0) if i == 2 else (128, 0, 128)
+            # Choisit une couleur différente pour chaque escargot
+            if i == 0:
+                couleur = BLUE
+            elif i == 1:
+                couleur = (0, 255, 0)  # Vert
+            elif i == 2:
+                couleur = (255, 255, 0)  # Jaune
+            else:
+                couleur = (128, 0, 128)  # Violet
+
+            # Affiche le nom et la touche associée
             nom = self.font_texte.render(f"{self.noms[i]} :", True, couleur)
             touche = self.font_texte.render(touches_escargots[i], True, WHITE)
             screen.blit(nom, (L//2 - 200, 150 + i*70))
             screen.blit(touche, (L//2 + 50, 150 + i*70))
 
+            # Dessine un rectangle autour du champ actif
             if self.input_active[i]:
                 pygame.draw.rect(screen, WHITE, (L//2 - 200, 150 + i*70, 100, 40), 2)
 
-        # Bouton Play
+        # Dessine le bouton Play
         pygame.draw.rect(screen, GRAY, (L//2 - 100, 500, 200, 60))
         play = self.font_bouton.render("Play", True, BLACK)
         screen.blit(play, (L//2 - play.get_width()//2, 510))
 
     def gerer_clics(self, pos):
-        
-        # Vérifie si on clique sur le bouton Play
-        if L//2 - 100 <= pos[0] <= L//2 + 100 and 500 <= pos[1] <= 560:
+        # Si on clique sur le bouton Play
+        if (L//2 - 100 <= pos[0] <= L//2 + 100) and (500 <= pos[1] <= 560):
             return "play"
-        
-        # Vérifie si on clique sur un champ de nom
+
+        # Si on clique sur un champ de nom
         for i in range(4):
-            if L//2 - 200 <= pos[0] <= L//2 + 100 and 150 + i*70 <= pos[1] <= 190 + i*70:
+            if (L//2 - 200 <= pos[0] <= L//2 + 100) and (150 + i*70 <= pos[1] <= 190 + i*70):
+                # Désactive tous les champs, puis active celui cliqué
                 self.input_active = [False]*4
                 self.input_active[i] = True
                 self.input_index = i
@@ -145,12 +162,17 @@ class Menu:
         return "menu"
 
     def gerer_saisie(self, event):
+        # Si une touche est pressée et qu'un champ est actif
         if event.type == pygame.KEYDOWN and any(self.input_active):
             i = self.input_index
             if event.key == pygame.K_RETURN:
+                # Désactive le champ si on appuie sur Entrée
                 self.input_active[i] = False
             elif event.key == pygame.K_BACKSPACE:
+                # Supprime le dernier caractère si on appuie sur Backspace
                 self.noms[i] = self.noms[i][:-1]
             else:
+                # Ajoute le caractère tapé au nom
                 self.noms[i] += event.unicode
+
 
