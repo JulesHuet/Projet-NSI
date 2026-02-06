@@ -1,6 +1,7 @@
 import pygame
 import sys
 from random import randint
+import os
 
 pygame.init()
 L = 1280
@@ -105,12 +106,12 @@ class Podium():
             screen.blit(escargot.img, pos)
         
         
-bg = pygame.transform.scale(pygame.image.load("bg.png"), (1280, 720))
-podium = pygame.transform.scale(pygame.image.load("podium.png"), (300, 300))
-bleu = pygame.transform.scale(pygame.image.load("snail_1.1.png"), (110, 110))
-vert = pygame.transform.scale(pygame.image.load("snail_2.1.png"), (110, 110))
-jaune = pygame.transform.scale(pygame.image.load("snail_3.1.png"), (120, 120))
-violet = pygame.transform.scale(pygame.image.load("snail_4.1.png"), (110, 110)) 
+bg = pygame.transform.scale(pygame.image.load(os.path.join("images","bg.png")), (1280, 720))
+podium = pygame.transform.scale(pygame.image.load(os.path.join("images", "podium.png")), (300, 300))
+bleu = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_1.1.png")), (110, 110))
+vert = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_2.1.png")), (110, 110))
+jaune = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_3.1.png")), (120, 120))
+violet = pygame.transform.scale(pygame.image.load(os.path.join("images","snail_4.1.png")), (110, 110)) 
 
 # Initialisation des gouttes de pluie
 gouttes = []
