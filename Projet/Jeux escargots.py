@@ -177,7 +177,7 @@ while run:
     if keys[pygame.K_TAB] and not prev_keys[pygame.K_TAB]:
         for escargot in listeescargots:
             escargot.x = 0
-            escargot.vitesse = 400
+            escargot.vitesse = 10
         victoire = None
         leaderboard = None
         afficher_podium = False
