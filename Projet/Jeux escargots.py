@@ -94,10 +94,13 @@ class affiche_victoire():
 class Podium():
     def __init__(self, img):
         self.img = img
-        self.positions = {0: (700, 260), 1: (630, 300), 2: (760, 300)}
+        self.positions = {0: (700, 265), 1: (630, 300), 2: (760, 300)}
+        self.font = pygame.font.SysFont(None, 40)
+        self.texte = self.font.render("Appuyez sur tab pour rejouer", True, (255, 255, 255))
     
     def afficher(self, leaderboard, listeescargots):
         screen.blit(self.img, (600, 230))
+        screen.blit(self.texte, (L//2 - self.texte.get_width()//2, 470))
         for i in range(min(3, len(leaderboard.resultats))):
             couleur, temps = leaderboard.resultats[i]
             escargots = ['Bleu', 'Vert', 'Jaune', 'Violet'].index(couleur)
