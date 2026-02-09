@@ -24,25 +24,7 @@ class Goutte:
         if self.y > H:
             self.y = randint(-20, 0)
             self.x = randint(0, L)
-
-class Confetti:
-    def __init__(self):
-        self.x = randint(0, L)
-        self.y = randint(-H, 0)
-        self.v = randint(2, 5)
-        self.taille = randint(3, 6)
-        self.couleur = (randint(50, 255), randint(50, 255), randint(50, 255))
-    
-    def bouger(self):
-        self.y += self.v
-        if self.y > H:
-            self.y = -10
-            self.x = randint(0, L)
-            self.couleur = (randint(50, 255), randint(50, 255), randint(50, 255))
-    
-    def afficher(self):
-        pygame.draw.circle(screen, self.couleur, (self.x, int(self.y)), self.taille)
-
+            
 class escargot:
     def __init__(self, img, y=680):
         self.x = 0
@@ -76,11 +58,27 @@ class Leaderboard():
             texte = self.font.render(f"{pos+1}. {couleur} - {sec:.2f}s", True, (255, 255, 255))
             screen.blit(texte, (L//2 - 250, posY))
             posY += 40
-        
-class Fond:
+
+class Confetti:
+    def __init__(self):
+        self.x = randint(0, L)
+        self.y = randint(-H, 0)
+        self.v = randint(2, 5)
+        self.taille = randint(3, 6)
+        self.couleur = (randint(50, 255), randint(50, 255), randint(50, 255))
+    
+    def bouger(self):
+        self.y += self.v
+        if self.y > H:
+            self.y = -10
+            self.x = randint(0, L)
+            self.couleur = (randint(50, 255), randint(50, 255), randint(50, 255))
+    
     def afficher(self):
-        screen.blit(bg, (0, 0))
- 
+        pygame.draw.circle(screen, self.couleur, (self.x, int(self.y)), self.taille)
+
+        
+
         
 class affiche_victoire():
     def __init__(self, couleur):
@@ -107,7 +105,10 @@ class Podium():
             escargot = listeescargots[escargots]
             pos = self.positions[i]
             screen.blit(escargot.img, pos)
-        
+            
+class Fond:
+    def afficher(self):
+        screen.blit(bg, (0, 0))
         
 bg = pygame.transform.scale(pygame.image.load(os.path.join("images","bg.png")), (1280, 720))
 podium = pygame.transform.scale(pygame.image.load(os.path.join("images", "podium.png")), (300, 300))
