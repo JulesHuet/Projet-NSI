@@ -9,11 +9,6 @@ H = 720
 screen = pygame.display.set_mode((L, H))
 clock = pygame.time.Clock()
 
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAY = (200, 200, 200)
-BLUE = (0, 0, 255)
-
 
 noms_escargots = ["Bleu", "Vert", "Jaune", "Violet"]
 touches_escargots = ["LCTRL", "SPACE", "RCTRL", "->"]
@@ -35,14 +30,14 @@ class Menu:
     def dessiner(self):
         # Affiche le fond et le titre
         screen.blit(bg, (0, 0))
-        titre = self.font_titre.render("Course d'escargots", True, WHITE)
+        titre = self.font_titre.render("Course d'escargots", True, (255, 255, 255)) # Titre en Blanc
         screen.blit(titre, (L//2 - titre.get_width()//2, 50))
 
         # Affiche les 4 escargots et leurs noms
         for i in range(4):
             # Choisit une couleur différente pour chaque escargot
             if i == 0:
-                couleur = BLUE
+                couleur = (0, 0, 255) # Bleu
             elif i == 1:
                 couleur = (0, 255, 0)  # Vert
             elif i == 2:
@@ -52,17 +47,17 @@ class Menu:
 
             # Affiche le nom et la touche associée
             nom = self.font_texte.render(f"{self.noms[i]} :", True, couleur)
-            touche = self.font_texte.render(touches_escargots[i], True, WHITE)
+            touche = self.font_texte.render(touches_escargots[i], True, (255, 255, 255)) # Touche en Blanc
             screen.blit(nom, (L//2 - 200, 150 + i*70))
             screen.blit(touche, (L//2 + 50, 150 + i*70))
 
             # Dessine un rectangle autour du champ actif
             if self.input_active[i]:
-                pygame.draw.rect(screen, WHITE, (L//2 - 200, 150 + i*70, 100, 40), 2)
+                pygame.draw.rect(screen, (255, 255, 255), (L//2 - 200, 150 + i*70, 100, 40), 2) # Rectangle en Blanc
 
         # Dessine le bouton Play
-        pygame.draw.rect(screen, GRAY, (L//2 - 100, 500, 200, 60))
-        play = self.font_bouton.render("Play", True, BLACK)
+        pygame.draw.rect(screen, (200, 200, 200), (L//2 - 100, 500, 200, 60)) # En gris
+        play = self.font_bouton.render("Play", True, (0, 0, 0)) # En noir
         screen.blit(play, (L//2 - play.get_width()//2, 510))
 
     def gerer_clics(self, pos):
@@ -113,43 +108,48 @@ class Leaderboard():
     def __init__(self):
         self.font = pygame.font.SysFont(None, 36)
         self.resultats = []
-        
-    def ajouter(self, couleur, temps):
+
+    def ajouter(self, index, temps):
         for r in self.resultats:
-            if r[0] == couleur:
+            if r[0] == index:
                 return
-        self.resultats.append((couleur, temps))
-    
+        self.resultats.append((index, temps))
+
     def afficher(self):
         posY = H//2 + (-70)
-        for pos, (couleur, temps) in enumerate(self.resultats):
+        for pos, (index, temps) in enumerate(self.resultats):
             sec = temps / 60
-            texte = self.font.render(f"{pos+1}. {couleur} - {sec:.2f}s", True, (255, 255, 255))
+            texte = self.font.render(f"{pos+1}. {noms_escargots[index]} - {sec:.2f}s", True, (255, 255, 255))
             screen.blit(texte, (L//2 - 250, posY))
             posY += 40
+
         
 class affiche_victoire():
-    def __init__(self, couleur):
-        self.couleur = couleur
+    def __init__(self, index):
+        self.index = index  # On passe l'index de l'escargot gagnant
         self.font = pygame.font.SysFont(None, 72)
-        self.texte = self.font.render(f"Victoire de {self.couleur} !", True, (255, 255, 255))
-        
+        self.texte = self.font.render(f"Victoire de {noms_escargots[self.index]} !", True, (255, 255, 255))
+
     def afficher(self):
         screen.blit(self.texte, (L//2 - self.texte.get_width()//2, 210))
+
 
 class Podium():
     def __init__(self, img):
         self.img = img
         self.positions = {0: (700, 260), 1: (630, 300), 2: (760, 300), 3:(850, 350)}
-    
+        self.font = pygame.font.SysFont(None, 40)
+        self.texte = self.font.render("Appuyez sur tab pour rejouer !", True, (255, 255, 255))
+
     def afficher(self, leaderboard, listeescargots):
         screen.blit(self.img, (600, 230))
+        screen.blit(self.texte, (L//2 - self.texte.get_width()//2, 470))
         for i in range(min(4, len(leaderboard.resultats))):
-            couleur, temps = leaderboard.resultats[i]
-            escargots = ['Bleu', 'Vert', 'Jaune', 'Violet'].index(couleur)
-            escargot = listeescargots[escargots]
+            index, temps = leaderboard.resultats[i]
+            escargot = listeescargots[index]
             pos = self.positions[i]
             screen.blit(escargot.img, pos)
+
             
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
@@ -269,7 +269,7 @@ while run:
         if keys[pygame.K_TAB] and not prev_keys[pygame.K_TAB]:
             for escargot in listeescargots:
                 escargot.x = 0
-                escargot.vitesse =1000
+                escargot.vitesse =10
             victoire = None
             leaderboard = None
             afficher_podium = False
@@ -303,14 +303,15 @@ while run:
 
         for i, escargot in enumerate(listeescargots):
             if escargot.x >= L - 30 and victoire is None:
-                victoire = affiche_victoire(['Bleu', 'Vert', 'Jaune', 'Violet'][i])
+                victoire = affiche_victoire(i)  # On passe l'index
                 leaderboard = Leaderboard()
                 confettis_actifs = True
             if escargot.x >= L - 30 and leaderboard:
-                leaderboard.ajouter(['Bleu', 'Vert', 'Jaune', 'Violet'][i], compteur_frame)
+                leaderboard.ajouter(i, compteur_frame)  # On passe l'index
 
                 if len(leaderboard.resultats) == 4:
                     afficher_podium = True
+
 
         # Dessine et déplace les gouttes si la pluie est active
         if pluie_active:
