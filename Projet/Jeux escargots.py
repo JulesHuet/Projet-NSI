@@ -106,33 +106,31 @@ class escargot:
         
 class Leaderboard():
     def __init__(self):
-        self.font = pygame.font.SysFont(None, 36)
-        self.resultats = []
+        self.font = pygame.font.SysFont(None, 36) # INITIALISATION DE LA POLICE DE TEXTE
+        self.resultats = [] # CRÉATION D'UNE LISTE VIDE POUR Y METTRE LES ESCARGOTS AYANT FRANCHIS LA LIGNE D'ARRIVÉE (CLASSEMENT)
 
     def ajouter(self, index, temps):
-        for r in self.resultats:
-            if r[0] == index:
-                return
-        self.resultats.append((index, temps))
+        for r in self.resultats: # DANS LA LISTE self.resultats
+            if r[0] != index: # ...SI L'ESCARGOT ACTUEL A DÉJA FRANCHI LA LIGNE...
+                return # QUITTER LA FONCTION
+        self.resultats.append((index, temps)) # ON AJOUTE AU FUR ET A MESURE LES ESCARGOTS QUI PASSENT LA LIGNE D'ARRIVÉE AVEC LEUR TEMPS TOTAL
 
     def afficher(self):
-        posY = H//2 + (-70)
-        for pos, (index, temps) in enumerate(self.resultats):
-            sec = temps / 60
-            texte = self.font.render(f"{pos+1}. {noms_escargots[index]} - {sec:.2f}s", True, (255, 255, 255))
-            screen.blit(texte, (L//2 - 250, posY))
-            posY += 40
+        posY = H//2 + (-70) # INITIALISATION POSITION DE DÉBUT
+        for pos, (index, temps) in enumerate(self.resultats): # POUR CHAQUE ESCARGOT AYANT FRANCHI LA LIGNE, SON ORDRE D'ARRIVÉE, LA COULEUR, LE TEMPS
+            sec = round(temps / 60) # CONVERSION DU TEMPS EN SECONDE
+            texte = self.font.render(f"{pos+1}. {noms_escargots[index]} - {sec}s", True, (255, 255, 255)) # CRÉATION TEXTE DE CHAQUE ESCARGOT (POSITION, COULEUR, TEMPS)
+            screen.blit(texte, (L//2 - 250, posY)) # AFFICHAGE DU TEXTE
+            posY += 40 # CHANGE LA POSITION DE CHAQUE NOUVELLE LIGNE DE TEXTE
 
-        
 class affiche_victoire():
     def __init__(self, index):
-        self.index = index  # On passe l'index de l'escargot gagnant
-        self.font = pygame.font.SysFont(None, 72)
-        self.texte = self.font.render(f"Victoire de {noms_escargots[self.index]} !", True, (255, 255, 255))
+        self.index = index  # ON VIENT RÉCUPÉRER DEPUIS L'INDEX DES ESCARGOTS
+        self.font = pygame.font.SysFont(None, 72) # INITIALISATION DE LA POLICE DE TEXTE
+        self.texte = self.font.render(f"Victoire de {noms_escargots[self.index]} !", True, (255, 255, 255)) # INITIALISATION DU TEXTE DE VICTOIRE AVEC L'ESCARGOT GAGNANT
 
     def afficher(self):
-        screen.blit(self.texte, (L//2 - self.texte.get_width()//2, 210))
-
+        screen.blit(self.texte, (L//2 - self.texte.get_width()//2, 210)) # AFFICHAGE DU TEXTE
 
 class Podium():
     def __init__(self, img):
@@ -150,7 +148,6 @@ class Podium():
             pos = self.positions[i]
             screen.blit(escargot.img, pos)
 
-            
 class Goutte:
     def __init__(self, x, y, vitesse, longueur):
         self.x = x
@@ -168,23 +165,22 @@ class Goutte:
             self.x = randint(0, L)
 
 class Confetti:
-    def __init__(self):
-        self.x = randint(0, L)
-        self.y = randint(-H, 0)
-        self.v = randint(2, 5)
-        self.taille = randint(3, 6)
-        self.couleur = (randint(50, 255), randint(50, 255), randint(50, 255))
+    def __init__(self): # POUR LA POSITION DE DÉPART ALÉATOIRE:
+        self.x = randint(0, L) # UN NOMBRE DE 0 à 1000 ASSIGNÉ A self.x
+        self.y = randint(-H, 0) # UN NOMBRE DE 0 à 600 ASSIGNÉ A self.y
+        self.v = randint(2, 5) # POUR VARIER LA VITESSE DE CHAQUE CONFETTI
+        self.taille = randint(3, 6) # TAILLE DE CHAQUE CONFETTI
+        self.couleur = (randint(50, 255), randint(50, 255), randint(50, 255)) # VARIER LA COULEUR DE CHAQUE CONFETTI (RGB)
     
     def bouger(self):
-        self.y += self.v
-        if self.y > H:
-            self.y = -10
-            self.x = randint(0, L)
-            self.couleur = (randint(50, 255), randint(50, 255), randint(50, 255))
+        self.y += self.v # AJOUT A CHAQUE FRAME DE LA VALEUR DE SPEED POUR SIMULER LA VITESSE
+        if self.y > H: # SI UN CONFETTI ATTEINT LE FOND...
+            self.y = -10 # ...ELLE REVIENT TOUT EN HAUT...
+            self.x = randint(0, L) # ...AVEC UNE NOUVELLE POSITION HORIZONTALE...
+            self.couleur = (randint(50, 255), randint(50, 255), randint(50, 255)) # ...ET UNE NOUVELLE COULEUR ALÉATOIRE
     
     def afficher(self):
         pygame.draw.circle(screen, self.couleur, (self.x, int(self.y)), self.taille)
-        
         
 bg = pygame.transform.scale(pygame.image.load(os.path.join("images","bg.png")), (1280, 720))
 podium = pygame.transform.scale(pygame.image.load(os.path.join("images", "podium.png")), (300, 300))
@@ -202,7 +198,7 @@ for _ in range(100):
     longueur = randint(5, 15)
     gouttes.append(Goutte(x, y, vitesse, longueur))
 
-confettis = [Confetti() for i in range(150)]
+confettis = [Confetti() for i in range(150)] # POUR EN AVOIR PLUSIEURS EN MÊME TEMPS
 
 # Listes des escargots ainsi que leurs positions 
 listeescargots = [
@@ -313,14 +309,13 @@ while run:
                     afficher_podium = True
 
 
-        # Dessine et déplace les gouttes si la pluie est active
+        # SI L'ON DEMANDE LA PLUIE OU LES CONFETTIS, LA BOUCLE FAIT APPEL AUX METHODES DANS LES CLASSES pluie_active & confettis_actifs
         if pluie_active:
-             for goutte in gouttes:
+             for goutte in gouttes: # DANS CHAQUE CLASSE Goutte, FAIRE APPEL A dessine() & tombe()
                  goutte.dessine()
                  goutte.tombe()
-
-        if confettis_actifs:
-            for confetti in confettis:
+        if confettis_actifs: # DANS CHAQUE CLASSE Confetti, FAIRE APPEL A afficher() & bouger()
+            for confetti in confettis: 
                 confetti.afficher()
                 confetti.bouger()
 
@@ -328,21 +323,18 @@ while run:
         compteur_pluie += 1
         if course_lancee:
             compteur_frame += 1
-
         # Active la pluie
         if compteur_pluie >= 500 and not pluie_active:
             pluie_active = True
-
         # Si la pluie est active, incrémente le compteur de durée
         if pluie_active:
             compteur_pluie += 1
             if compteur_pluie >= 1000 and pluie_active:
                 pluie_active = False
                 compteur_pluie = 0
-
+        # SI UNE VICTOIRE/LA FIN DE LA COURSE EST DÉTECTÉE, LA BOUCLE FAIT APPEL A LA METHODE afficher() DANS LES CLASSES victoire & leaderboard
         if victoire:
             victoire.afficher()
-
         if leaderboard:
             leaderboard.afficher()
 
