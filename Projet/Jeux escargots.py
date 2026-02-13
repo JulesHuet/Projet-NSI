@@ -111,7 +111,7 @@ class Leaderboard():
 
     def ajouter(self, index, temps):
         for r in self.resultats: # DANS LA LISTE self.resultats
-            if r[0] != index: # ...SI L'ESCARGOT ACTUEL A DÉJA FRANCHI LA LIGNE...
+            if r[0] == index: # ...SI L'ESCARGOT ACTUEL A DÉJA FRANCHI LA LIGNE...
                 return # QUITTER LA FONCTION
         self.resultats.append((index, temps)) # ON AJOUTE AU FUR ET A MESURE LES ESCARGOTS QUI PASSENT LA LIGNE D'ARRIVÉE AVEC LEUR TEMPS TOTAL
 
